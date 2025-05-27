@@ -2,442 +2,352 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gift Card Generator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
   <style>
+    :root {
+      --primary-color: #007bff;
+      --background-light: #f0f0f0;
+      --background-dark: #121212;
+      --text-light: #ffffff;
+      --text-dark: #000000;
+      --card-bg: #ffffff;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+    }
+
     * {
       box-sizing: border-box;
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #ece9e6, #ffffff);
-      padding: 30px;
-      color: #333;
-      text-align: center;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    h1, h2 {
-      margin-bottom: 20px;
-    }
-    .card-option {
-      display: inline-block;
-      width: 180px;
-      margin: 15px;
+      background: var(--background-light);
+      color: var(--text-dark);
+      transition: background 0.3s, color 0.3s;
       padding: 20px;
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-      text-align: center;
-      user-select: none;
     }
+
+    .dark-mode {
+      background: var(--background-dark);
+      color: var(--text-light);
+    }
+
+    .dark-mode .card-option {
+      background: #1e1e1e;
+      color: var(--text-light);
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .toggle-btn {
+      padding: 8px 15px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .search-bar {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .search-bar input {
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .card-option {
+      width: 180px;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 8px 16px var(--card-shadow);
+      text-align: center;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
     .card-option:hover {
       transform: scale(1.05);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     }
+
     .card-option img {
       width: 100px;
       height: 60px;
       object-fit: contain;
       margin-bottom: 10px;
     }
-    button {
-      background-color: #007bff;
-      color: white;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      margin-top: 10px;
+
+    @media (max-width: 600px) {
+      .card-option {
+        width: 100%;
+      }
+
+      .search-bar input {
+        width: 95%;
+      }
     }
-    button:hover {
-      background-color: #0056b3;
+
+    .hero {
+      text-align: center;
+      margin: 30px 0;
+      animation: fadeIn 1s ease-in-out;
     }
-    input {
-      padding: 10px;
-      font-size: 16px;
-      width: 280px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-    }
-    .section {
-      display: none;
-      margin-top: 30px;
-      animation: fadeIn 0.8s ease-in-out;
-    }
-    .spinner, .overlay {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .spinner {
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid #3498db;
-      border-radius: 50%;
-      width: 70px;
-      height: 70px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    .overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(255, 255, 255, 0.8);
-      z-index: 1000;
-      display: none;
-    }
-    .stripe-loader {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(45deg, #007bff, #00d4ff);
-      animation: bounce 0.8s infinite alternate;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes bounce { 0% { transform: scale(1); } 100% { transform: scale(1.3); } }
-    .green-tick { font-size: 60px; color: green; animation: pop 0.6s ease-in-out; }
-    .secure-label { margin: 10px auto; display: flex; align-items: center; justify-content: center; color: green; font-weight: bold; }
-    .secure-label i { margin-right: 8px; }
-    .copy-btn { margin-top: 15px; background: green; }
-    .progress-bar {
-      width: 0%;
-      height: 5px;
-      background: green;
-      transition: width 1s;
-      margin-top: 10px;
-      border-radius: 10px;
-      max-width: 400px;
-    }
-    .error { border: 1px solid red; }
-    .error-message { color: red; font-size: 12px; margin-top: 5px; }
-    @media screen and (max-width: 600px) {
-      .card-option { width: 90%; }
-      input { width: 90%; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-
-  <div class="overlay" id="stripeOverlay">
-    <div class="stripe-loader"></div>
+  <div class="header">
+    <h2>Gift Card Store</h2>
+    <button class="toggle-btn" onclick="toggleMode()">Toggle Dark Mode</button>
   </div>
-  <div class="progress-bar" id="progressBar"></div>
 
-  <h1>Select a Gift Card</h1>
-  <div id="card-options">
+  <div class="hero">
+    <h1>Choose Your Favorite Gift Card</h1>
+    <p>Instant delivery. Safe payment. 100% working codes.</p>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search for a card..." oninput="filterCards()" />
+  </div>
+
+  <div class="card-container" id="card-options">
     <div class="card-option" onclick="selectCard('Amazon')">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon">
       <p>Amazon</p>
     </div>
     <div class="card-option" onclick="selectCard('Flipkart')">
-      <img src="https://1000logos.net/wp-content/uploads/2021/02/Flipkart-logo.png" alt="Flipkart" />
+      <img src="https://1000logos.net/wp-content/uploads/2021/02/Flipkart-logo.png" alt="Flipkart">
       <p>Flipkart</p>
     </div>
     <div class="card-option" onclick="selectCard('BookMyShow')">
-      <img src="https://assets-in.bmscdn.com/static/2023/03/bms-logo-new.png" alt="BookMyShow" />
+      <img src="https://assets-in.bmscdn.com/static/2023/03/bms-logo-new.png" alt="BookMyShow">
       <p>BookMyShow</p>
     </div>
     <div class="card-option" onclick="selectCard('Zomato')">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Zomato_logo.png" alt="Zomato" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Zomato_logo.png" alt="Zomato">
       <p>Zomato</p>
     </div>
   </div>
-
-  <div id="amount-section" class="section">
-    <h2>Enter Amount for <span id="selected-card"></span></h2>
-    <div style="font-size: 22px;">
-      $ <input type="number" id="amount" placeholder="Enter amount" min="1" />
+  <div id="payment-section" style="display:none; margin-top: 30px;">
+    <h2 id="selected-brand-title">Selected: </h2>
+    <div style="text-align:center; margin: 20px 0;">
+      <input type="number" id="amount" placeholder="Enter amount (₹)" style="padding:10px; width:200px; margin-right:10px;" />
+      <input type="email" id="email" placeholder="Enter your email" style="padding:10px; width:250px;" />
     </div>
-    <input type="email" id="email" placeholder="Enter your email to receive card" />
-    <br />
-    <button onclick="proceedToPayment()">Proceed to Payment</button>
-    <p class="error-message" id="amount-error" style="display:none;"></p>
-    <p class="error-message" id="email-error" style="display:none;"></p>
+
+    <div style="text-align:center; margin: 20px 0;">
+      <button onclick="showPaymentMethod('upi')">Pay with UPI</button>
+      <button onclick="showPaymentMethod('card')">Pay with Card</button>
+    </div>
+
+    <!-- UPI Section -->
+    <div id="upi-method" style="display:none; text-align:center;">
+      <input type="text" id="upiId" placeholder="Enter your UPI ID" style="padding:10px; width:250px;" />
+      <br><br>
+      <button onclick="initiatePayment()">Pay Now</button>
+    </div>
+
+    <!-- Card Section -->
+    <div id="card-method" style="display:none; text-align:center;">
+      <div style="margin: 20px auto; width:300px; background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+        <h4>Card Preview</h4>
+        <div style="background:#007bff; color:#fff; padding:20px; border-radius:8px; margin-bottom:15px;">
+          <p id="cardNumberPreview">**** **** **** 1234</p>
+          <p id="cardHolderPreview">John Doe</p>
+          <p id="cardExpiryPreview">12/29</p>
+        </div>
+        <input type="text" id="cardNumber" placeholder="Card Number" oninput="updateCardPreview()" style="margin-bottom:8px; width:100%; padding:8px;"><br>
+        <input type="text" id="cardHolder" placeholder="Cardholder Name" oninput="updateCardPreview()" style="margin-bottom:8px; width:100%; padding:8px;"><br>
+        <input type="text" id="cardExpiry" placeholder="MM/YY" oninput="updateCardPreview()" style="margin-bottom:8px; width:100%; padding:8px;"><br>
+        <input type="text" id="cardCVV" placeholder="CVV" style="margin-bottom:8px; width:100%; padding:8px;"><br>
+        <button onclick="initiatePayment()">Pay Securely</button>
+      </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" style="display:none; text-align:center; margin:20px;">
+      <div class="spinner" style="margin:20px auto;"></div>
+      <p>Processing your payment...</p>
+    </div>
+
+    <!-- Confirmation Screen -->
+    <div id="confirmation-screen" style="display:none; text-align:center; margin:20px;">
+      <div style="font-size:60px; color:green;">✔</div>
+      <h2>Payment Successful!</h2>
+      <p>Your Gift Card Code:</p>
+      <h3 id="giftCardCode" style="font-weight: bold;"></h3>
+    </div>
   </div>
 
-  <div id="payment-section" class="section">
-    <h2>Select Payment Method</h2>
-    <button onclick="delayNext('loading-section', 2000)">Pay with UPI</button>
-    <button onclick="showCardForm()">Credit/Debit Card</button>
-  </div>
+  <!-- Spinner Style -->
+  <style>
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid var(--primary-color);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
 
-  <div id="card-form" class="section">
-    <h2>Enter Card Details</h2>
-    <div class="secure-label"><i class="fas fa-lock"></i>SSL Secured</div>
-    <input
-      type="text"
-      id="card-number"
-      placeholder="Card Number"
-      maxlength="19"
-      oninput="formatCardNumber(this)"
-    />
-    <br />
-    <input type="text" id="expiry-date" placeholder="Expiry Date (MM/YY)" maxlength="5" />
-    <br />
-    <input type="password" id="cvv" placeholder="CVV" maxlength="3" />
-    <br />
-    <input type="text" id="card-holder" placeholder="Card Holder Name" />
-    <br />
-    <button onclick="processCardPayment()">Pay Now</button>
-    <p class="error-message" id="card-error" style="display:none;"></p>
-  </div>
-  <div id="loading-section" class="section">
-    <h2>Processing Payment...</h2>
-    <div class="spinner"></div>
-  </div>
-
-  <div id="confirmation-section" class="section">
-    <h2>Payment Successful!</h2>
-    <div class="green-tick"><i class="fas fa-check-circle"></i></div>
-    <p>Your gift card code is:</p>
-    <h3 id="gift-code" style="letter-spacing: 4px; font-weight: 700; font-size: 24px;"></h3>
-    <button onclick="copyGiftCode()">Copy Code</button>
-    <button onclick="resetApp()">Back to Home</button>
-    <p id="copy-message" style="color:green; margin-top:10px; display:none;">Copied to clipboard!</p>
-  </div>
-
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
   <script>
-    // State variables
-    let selectedCard = "";
-    let amount = 0;
+  const giftCards = {
+    amazon: { name: "Amazon", logo: "https://img.icons8.com/color/96/000000/amazon.png" },
+    flipkart: { name: "Flipkart", logo: "https://img.icons8.com/color/96/flipkart.png" },
+    bookmyshow: { name: "BookMyShow", logo: "https://img.icons8.com/color/96/000000/bookmyshow.png" },
+    zomato: { name: "Zomato", logo: "https://img.icons8.com/color/96/zomato.png" }
+  };
 
-    // Show element helper
-    function showSection(id) {
-      document.querySelectorAll('.section').forEach(section => {
-        section.style.display = 'none';
-      });
-      document.getElementById('card-options').style.display = 'none';
-      if (id === 'card-options') {
-        document.getElementById('card-options').style.display = 'flex';
+  let selectedBrand = "";
+
+  function selectCard(brand) {
+    selectedBrand = brand;
+    document.getElementById("selected-brand-title").innerText = "Selected: " + giftCards[brand].name;
+    document.getElementById("payment-section").style.display = "block";
+    window.scrollTo({ top: document.getElementById("payment-section").offsetTop, behavior: 'smooth' });
+  }
+
+  function showPaymentMethod(method) {
+    document.getElementById("upi-method").style.display = method === "upi" ? "block" : "none";
+    document.getElementById("card-method").style.display = method === "card" ? "block" : "none";
+  }
+
+  function updateCardPreview() {
+    const num = document.getElementById("cardNumber").value;
+    const name = document.getElementById("cardHolder").value;
+    const expiry = document.getElementById("cardExpiry").value;
+    document.getElementById("cardNumberPreview").innerText = num || "**** **** **** 1234";
+    document.getElementById("cardHolderPreview").innerText = name || "John Doe";
+    document.getElementById("cardExpiryPreview").innerText = expiry || "12/29";
+  }
+
+  function initiatePayment() {
+    const email = document.getElementById("email").value;
+    if (!email || !email.includes("@")) return alert("Please enter a valid email.");
+
+    document.getElementById("upi-method").style.display = "none";
+    document.getElementById("card-method").style.display = "none";
+    document.getElementById("loading-screen").style.display = "block";
+
+    setTimeout(() => {
+      document.getElementById("loading-screen").style.display = "none";
+      document.getElementById("confirmation-screen").style.display = "block";
+      document.getElementById("giftCardCode").innerText = generateCode();
+      launchConfetti();
+    }, 3000);
+  }
+
+  function generateCode() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let code = "";
+    for (let i = 0; i < 13; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+    return code;
+  }
+
+  // Confetti
+  function launchConfetti() {
+    const canvas = document.createElement("canvas");
+    canvas.style.position = "fixed";
+    canvas.style.top = 0;
+    canvas.style.left = 0;
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.pointerEvents = "none";
+    canvas.id = "confettiCanvas";
+    document.body.appendChild(canvas);
+
+    const confetti = canvas.getContext("2d");
+    const pieces = Array.from({ length: 200 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * -window.innerHeight,
+      size: Math.random() * 8 + 4,
+      speed: Math.random() * 3 + 2,
+      color: `hsl(${Math.random() * 360}, 100%, 50%)`
+    }));
+
+    function draw() {
+      confetti.clearRect(0, 0, canvas.width, canvas.height);
+      for (let p of pieces) {
+        confetti.fillStyle = p.color;
+        confetti.fillRect(p.x, p.y, p.size, p.size);
+        p.y += p.speed;
+        if (p.y > window.innerHeight) p.y = -10;
       }
-      if (id) {
-        document.getElementById(id).style.display = 'block';
-      }
-      clearErrors();
-      resetProgressBar();
-      hideOverlay();
+      requestAnimationFrame(draw);
     }
 
-    // Reset errors
-    function clearErrors() {
-      ['amount-error', 'email-error', 'card-error'].forEach(id => {
-        const el = document.getElementById(id);
-        el.style.display = 'none';
-        el.textContent = '';
-      });
-      ['amount', 'email', 'card-number', 'expiry-date', 'cvv', 'card-holder'].forEach(id => {
-        document.getElementById(id).classList.remove('error');
-      });
-    }
+    draw();
+    setTimeout(() => document.body.removeChild(canvas), 5000);
+  }
 
-    // Select card option
-    function selectCard(card) {
-      selectedCard = card;
-      document.getElementById('selected-card').textContent = card;
-      showSection('amount-section');
-    }
+  // Light/Dark mode toggle
+  const toggle = document.createElement("button");
+  toggle.innerText = "Toggle Dark Mode";
+  toggle.style.position = "fixed";
+  toggle.style.bottom = "20px";
+  toggle.style.right = "20px";
+  toggle.style.padding = "10px";
+  toggle.style.zIndex = 9999;
+  toggle.onclick = () => {
+    const dark = document.body.classList.toggle("dark-mode");
+    toggle.innerText = dark ? "Toggle Light Mode" : "Toggle Dark Mode";
+    document.documentElement.style.setProperty('--primary-color', dark ? "#0ff" : "#007bff");
+  };
+  document.body.appendChild(toggle);
+</script>
 
-    // Proceed to payment
-    function proceedToPayment() {
-      clearErrors();
-      let amountInput = document.getElementById('amount');
-      let emailInput = document.getElementById('email');
-      let valid = true;
+<style>
+  .dark-mode {
+    background: #111;
+    color: #eee;
+  }
 
-      amount = parseFloat(amountInput.value);
-      if (!amount || amount < 1) {
-        valid = false;
-        amountInput.classList.add('error');
-        const err = document.getElementById('amount-error');
-        err.style.display = 'block';
-        err.textContent = 'Please enter a valid amount (minimum $1).';
-      }
+  .dark-mode input,
+  .dark-mode button {
+    background: #222;
+    color: #fff;
+    border: 1px solid #555;
+  }
 
-      if (!validateEmail(emailInput.value)) {
-        valid = false;
-        emailInput.classList.add('error');
-        const err = document.getElementById('email-error');
-        err.style.display = 'block';
-        err.textContent = 'Please enter a valid email address.';
-      }
-
-      if (!valid) return;
-
-      showSection('payment-section');
-    }
-
-    // Validate email helper
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    // Show card payment form
-    function showCardForm() {
-      showSection('card-form');
-    }
-
-    // Format card number input with spaces
-    function formatCardNumber(input) {
-      let val = input.value.replace(/\D/g, '');
-      let formatted = '';
-      for (let i = 0; i < val.length; i++) {
-        if (i > 0 && i % 4 === 0) formatted += ' ';
-        formatted += val[i];
-      }
-      input.value = formatted;
-    }
-
-    // Validate card details (basic)
-    function validateCardDetails() {
-      clearErrors();
-      let valid = true;
-      const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
-      const expiry = document.getElementById('expiry-date').value;
-      const cvv = document.getElementById('cvv').value;
-      const cardHolder = document.getElementById('card-holder').value.trim();
-
-      // Card number: 13-19 digits (basic)
-      if (!/^\d{13,19}$/.test(cardNumber)) {
-        valid = false;
-        document.getElementById('card-number').classList.add('error');
-      }
-
-      // Expiry MM/YY and valid month
-      if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
-        valid = false;
-        document.getElementById('expiry-date').classList.add('error');
-      }
-
-      // CVV 3 digits
-      if (!/^\d{3}$/.test(cvv)) {
-        valid = false;
-        document.getElementById('cvv').classList.add('error');
-      }
-
-      // Cardholder name not empty
-      if (!cardHolder) {
-        valid = false;
-        document.getElementById('card-holder').classList.add('error');
-      }
-
-      if (!valid) {
-        const err = document.getElementById('card-error');
-        err.style.display = 'block';
-        err.textContent = 'Please fill in valid card details.';
-      }
-
-      return valid;
-    }
-
-    // Process card payment
-    function processCardPayment() {
-      if (!validateCardDetails()) return;
-      showSection('loading-section');
-      delayNext('confirmation-section', 3000);
-    }
-
-    // Delay function to switch sections
-    function delayNext(nextId, delay=2000) {
-      showOverlay();
-      startProgressBar();
-      setTimeout(() => {
-        hideOverlay();
-        showSection(nextId);
-      }, delay);
-    }
-
-    // Show overlay with loader
-    function showOverlay() {
-      document.getElementById('stripeOverlay').style.display = 'flex';
-    }
-    function hideOverlay() {
-      document.getElementById('stripeOverlay').style.display = 'none';
-    }
-
-    // Progress bar logic
-    let progressInterval;
-    function startProgressBar() {
-      const bar = document.getElementById('progressBar');
-      bar.style.width = '0%';
-      let width = 0;
-      clearInterval(progressInterval);
-      progressInterval = setInterval(() => {
-        if (width >= 100) {
-          clearInterval(progressInterval);
-        } else {
-          width += 5;
-          bar.style.width = width + '%';
-        }
-      }, 100);
-    }
-    function resetProgressBar() {
-      clearInterval(progressInterval);
-      document.getElementById('progressBar').style.width = '0%';
-    }
-
-    // Generate gift card code 12-13 chars alphanumeric
-    function generateGiftCode() {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let code = '';
-      for (let i = 0; i < 13; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return code;
-    }
-
-    // Copy gift code to clipboard
-    function copyGiftCode() {
-      const code = document.getElementById('gift-code').textContent;
-      navigator.clipboard.writeText(code).then(() => {
-        const msg = document.getElementById('copy-message');
-        msg.style.display = 'block';
-        setTimeout(() => (msg.style.display = 'none'), 2000);
-      });
-    }
-
-    // Reset app to home
-    function resetApp() {
-      selectedCard = '';
-      amount = 0;
-      document.getElementById('amount').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('card-number').value = '';
-      document.getElementById('expiry-date').value = '';
-      document.getElementById('cvv').value = '';
-      document.getElementById('card-holder').value = '';
-      showSection('card-options');
-    }
-
-    // On page load show card options
-    window.onload = () => {
-      showSection('card-options');
-    };
-
-    // When confirmation section is shown, generate code
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(mutation => {
-        if (
-          mutation.target.id === 'confirmation-section' &&
-          mutation.target.style.display === 'block'
-        ) {
-          document.getElementById('gift-code').textContent = generateGiftCode();
-        }
-      });
-    });
-    observer.observe(document.getElementById('confirmation-section'), { attributes: true, attributeFilter: ['style'] });
-  </script>
-
-</body>
-</html>
+  .dark-mode #card-method div {
+    background: #333;
+    color: #eee;
+  }
+</style>
