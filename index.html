@@ -4,350 +4,295 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gift Card Generator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
-  <style>
-    :root {
-      --primary-color: #007bff;
-      --background-light: #f0f0f0;
-      --background-dark: #121212;
-      --text-light: #ffffff;
-      --text-dark: #000000;
-      --card-bg: #ffffff;
-      --card-shadow: rgba(0, 0, 0, 0.1);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--background-light);
-      color: var(--text-dark);
-      transition: background 0.3s, color 0.3s;
-      padding: 20px;
-    }
-
-    .dark-mode {
-      background: var(--background-dark);
-      color: var(--text-light);
-    }
-
-    .dark-mode .card-option {
-      background: #1e1e1e;
-      color: var(--text-light);
-    }
-
-    h1, h2 {
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-    }
-
-    .toggle-btn {
-      padding: 8px 15px;
-      background: #333;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .search-bar {
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    .search-bar input {
-      padding: 10px;
-      width: 80%;
-      max-width: 400px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .card-option {
-      width: 180px;
-      padding: 20px;
-      background: var(--card-bg);
-      border-radius: 20px;
-      box-shadow: 0 8px 16px var(--card-shadow);
-      text-align: center;
-      transition: transform 0.3s;
-      cursor: pointer;
-    }
-
-    .card-option:hover {
-      transform: scale(1.05);
-    }
-
-    .card-option img {
-      width: 100px;
-      height: 60px;
-      object-fit: contain;
-      margin-bottom: 10px;
-    }
-
-    @media (max-width: 600px) {
-      .card-option {
-        width: 100%;
-      }
-
-      .search-bar input {
-        width: 95%;
-      }
-    }
-
-    .hero {
-      text-align: center;
-      margin: 30px 0;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="header">
-    <h2>Gift Card Store</h2>
-    <button class="toggle-btn" onclick="toggleMode()">Toggle Dark Mode</button>
-  </div>
+  <div class="overlay" id="stripeOverlay"><div class="stripe-loader"></div></div>
+  <div class="progress-bar" id="progressBar"></div>
 
-  <div class="hero">
-    <h1>Choose Your Favorite Gift Card</h1>
-    <p>Instant delivery. Safe payment. 100% working codes.</p>
-  </div>
-
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search for a card..." oninput="filterCards()" />
-  </div>
-
-  <div class="card-container" id="card-options">
-    <div class="card-option" onclick="selectCard('Amazon')">
+  <h1>Select a Gift Card</h1>
+  <div id="card-options">
+    <div class="card-option" data-card="Amazon">
       <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon">
       <p>Amazon</p>
     </div>
-    <div class="card-option" onclick="selectCard('Flipkart')">
+    <div class="card-option" data-card="Flipkart">
       <img src="https://1000logos.net/wp-content/uploads/2021/02/Flipkart-logo.png" alt="Flipkart">
       <p>Flipkart</p>
     </div>
-    <div class="card-option" onclick="selectCard('BookMyShow')">
+    <div class="card-option" data-card="BookMyShow">
       <img src="https://assets-in.bmscdn.com/static/2023/03/bms-logo-new.png" alt="BookMyShow">
       <p>BookMyShow</p>
     </div>
-    <div class="card-option" onclick="selectCard('Zomato')">
+    <div class="card-option" data-card="Zomato">
       <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Zomato_logo.png" alt="Zomato">
       <p>Zomato</p>
     </div>
   </div>
-  <div id="payment-section" style="display:none; margin-top: 30px;">
-    <h2 id="selected-brand-title">Selected: </h2>
-    <div style="text-align:center; margin: 20px 0;">
-      <input type="number" id="amount" placeholder="Enter amount (₹)" style="padding:10px; width:200px; margin-right:10px;" />
-      <input type="email" id="email" placeholder="Enter your email" style="padding:10px; width:250px;" />
-    </div>
 
-    <div style="text-align:center; margin: 20px 0;">
-      <button onclick="showPaymentMethod('upi')">Pay with UPI</button>
-      <button onclick="showPaymentMethod('card')">Pay with Card</button>
-    </div>
-
-    <!-- UPI Section -->
-    <div id="upi-method" style="display:none; text-align:center;">
-      <input type="text" id="upiId" placeholder="Enter your UPI ID" style="padding:10px; width:250px;" />
-      <br><br>
-      <button onclick="initiatePayment()">Pay Now</button>
-    </div>
-
-    <!-- Card Section -->
-    <div id="card-method" style="display:none; text-align:center;">
-      <div style="margin: 20px auto; width:300px; background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-        <h4>Card Preview</h4>
-        <div style="background:#007bff; color:#fff; padding:20px; border-radius:8px; margin-bottom:15px;">
-          <p id="cardNumberPreview">**** **** **** 1234</p>
-          <p id="cardHolderPreview">John Doe</p>
-          <p id="cardExpiryPreview">12/29</p>
-        </div>
-        <input type="text" id="cardNumber" placeholder="Card Number" oninput="updateCardPreview()" style="margin-bottom:8px; width:100%; padding:8px;"><br>
-        <input type="text" id="cardHolder" placeholder="Cardholder Name" oninput="updateCardPreview()" style="margin-bottom:8px; width:100%; padding:8px;"><br>
-        <input type="text" id="cardExpiry" placeholder="MM/YY" oninput="updateCardPreview()" style="margin-bottom:8px; width:100%; padding:8px;"><br>
-        <input type="text" id="cardCVV" placeholder="CVV" style="margin-bottom:8px; width:100%; padding:8px;"><br>
-        <button onclick="initiatePayment()">Pay Securely</button>
-      </div>
-    </div>
-
-    <!-- Loading Screen -->
-    <div id="loading-screen" style="display:none; text-align:center; margin:20px;">
-      <div class="spinner" style="margin:20px auto;"></div>
-      <p>Processing your payment...</p>
-    </div>
-
-    <!-- Confirmation Screen -->
-    <div id="confirmation-screen" style="display:none; text-align:center; margin:20px;">
-      <div style="font-size:60px; color:green;">✔</div>
-      <h2>Payment Successful!</h2>
-      <p>Your Gift Card Code:</p>
-      <h3 id="giftCardCode" style="font-weight: bold;"></h3>
-    </div>
+  <div id="amount-section" class="section">
+    <h2>Enter Amount for <span id="selected-card"></span></h2>
+    <div style="font-size: 22px;">$ <input type="number" id="amount" placeholder="Enter amount" /></div>
+    <input type="email" id="email" placeholder="Enter your email to receive card" />
+    <br><button onclick="delayNext('payment-section', 2000)">Proceed to Payment</button>
   </div>
 
-  <!-- Spinner Style -->
-  <style>
-    .spinner {
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid var(--primary-color);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-    }
+  <div id="payment-section" class="section">
+    <h2>Select Payment Method</h2>
+    <button onclick="delayNext('loading-section', 3000)">Pay with UPI</button>
+    <button onclick="delayNext('card-form', 3000)">Credit/Debit Card</button>
+  </div>
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
-  <script>
-  const giftCards = {
-    amazon: { name: "Amazon", logo: "https://img.icons8.com/color/96/000000/amazon.png" },
-    flipkart: { name: "Flipkart", logo: "https://img.icons8.com/color/96/flipkart.png" },
-    bookmyshow: { name: "BookMyShow", logo: "https://img.icons8.com/color/96/000000/bookmyshow.png" },
-    zomato: { name: "Zomato", logo: "https://img.icons8.com/color/96/zomato.png" }
-  };
+  <div id="card-form" class="section">
+    <h2>Enter Card Details</h2>
+    <div class="secure-label"><i class="fas fa-lock"></i>SSL Secured</div>
+    <input type="text" id="card-number" placeholder="Card Number" maxlength="19" oninput="formatCardNumber(this)" />
+    <br>
+    <input type="text" placeholder="Expiry Date (MM/YY)" />
+    <br>
+    <input type="password" placeholder="CVV" />
+    <br>
+    <input type="text" placeholder="Card Holder Name" />
+    <br>
+    <button onclick="processCardPayment()">Pay Now</button>
+  </div>
 
-  let selectedBrand = "";
+  <div id="loading-section" class="section">
+    <h2>Processing Payment...</h2>
+    <div class="spinner"></div>
+  </div>
 
-  function selectCard(brand) {
-    selectedBrand = brand;
-    document.getElementById("selected-brand-title").innerText = "Selected: " + giftCards[brand].name;
-    document.getElementById("payment-section").style.display = "block";
-    window.scrollTo({ top: document.getElementById("payment-section").offsetTop, behavior: 'smooth' });
+  <div id="confirmation-section" class="section">
+    <h2>Payment Successful</h2>
+    <div class="green-tick">✔</div>
+    <p>Your gift card code:</p>
+    <h3 id="gift-code"></h3>
+    <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 2em;
+}
+
+#card-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.card-option {
+  background: white;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 15px;
+  width: 140px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-option:hover {
+  transform: translateY(-5px);
+  background: #f0f8ff;
+}
+
+.card-option img {
+  width: 100px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.section {
+  display: none;
+  margin-top: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  padding: 10px;
+  margin: 8px;
+  width: 70%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #ccc;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 30px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
+}
 
-  function showPaymentMethod(method) {
-    document.getElementById("upi-method").style.display = method === "upi" ? "block" : "none";
-    document.getElementById("card-method").style.display = method === "card" ? "block" : "none";
-  }
+.green-tick {
+  font-size: 48px;
+  color: green;
+  font-weight: bold;
+}
 
-  function updateCardPreview() {
-    const num = document.getElementById("cardNumber").value;
-    const name = document.getElementById("cardHolder").value;
-    const expiry = document.getElementById("cardExpiry").value;
-    document.getElementById("cardNumberPreview").innerText = num || "**** **** **** 1234";
-    document.getElementById("cardHolderPreview").innerText = name || "John Doe";
-    document.getElementById("cardExpiryPreview").innerText = expiry || "12/29";
-  }
+.copy-btn {
+  background-color: #28a745;
+}
 
-  function initiatePayment() {
-    const email = document.getElementById("email").value;
-    if (!email || !email.includes("@")) return alert("Please enter a valid email.");
+.copy-btn:hover {
+  background-color: #1e7e34;
+}
 
-    document.getElementById("upi-method").style.display = "none";
-    document.getElementById("card-method").style.display = "none";
-    document.getElementById("loading-screen").style.display = "block";
+.stripe-loader {
+  width: 100px;
+  height: 100px;
+  border: 6px solid #007bff;
+  border-top: 6px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 100px auto;
+}
 
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  height: 100%; width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 5px;
+  background: #007bff;
+  transition: width 0.3s;
+}
+
+.secure-label {
+  color: green;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+let selectedCard = "";
+let progressBar = document.getElementById("progress-bar");
+
+function selectCard(card) {
+  selectedCard = card;
+  document.getElementById("selected-card").innerText = card;
+  document.getElementById("card-options").style.display = "none";
+  showSection("amount-section");
+}
+
+function delayNext(sectionId, delay = 2000) {
+  hideAllSections();
+  showSection("loading-section");
+  setTimeout(() => {
+    hideAllSections();
+    showSection(sectionId);
+  }, delay);
+}
+
+function processCardPayment() {
+  hideAllSections();
+  showStripeAnimation();
+  setTimeout(() => {
+    hideStripeAnimation();
+    showSection("loading-section");
     setTimeout(() => {
-      document.getElementById("loading-screen").style.display = "none";
-      document.getElementById("confirmation-screen").style.display = "block";
-      document.getElementById("giftCardCode").innerText = generateCode();
-      launchConfetti();
-    }, 3000);
+      hideAllSections();
+      showSection("confirmation-section");
+      document.getElementById("gift-code").innerText = generateCodeText();
+    }, 2500);
+  }, 2500);
+}
+
+function showSection(id) {
+  document.getElementById(id).style.display = "block";
+}
+
+function hideAllSections() {
+  document.querySelectorAll(".section").forEach(section => {
+    section.style.display = "none";
+  });
+}
+
+function generateCodeText() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "";
+  for (let i = 0; i < 13; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
+  return code;
+}
 
-  function generateCode() {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = "";
-    for (let i = 0; i < 13; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-    return code;
-  }
+function copyCode() {
+  const codeText = document.getElementById("gift-code").innerText;
+  navigator.clipboard.writeText(codeText).then(() => {
+    alert("Code copied to clipboard!");
+  });
+}
 
-  // Confetti
-  function launchConfetti() {
-    const canvas = document.createElement("canvas");
-    canvas.style.position = "fixed";
-    canvas.style.top = 0;
-    canvas.style.left = 0;
-    canvas.style.width = "100vw";
-    canvas.style.height = "100vh";
-    canvas.style.pointerEvents = "none";
-    canvas.id = "confettiCanvas";
-    document.body.appendChild(canvas);
+function formatCardNumber(input) {
+  input.value = input.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+}
 
-    const confetti = canvas.getContext("2d");
-    const pieces = Array.from({ length: 200 }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * -window.innerHeight,
-      size: Math.random() * 8 + 4,
-      speed: Math.random() * 3 + 2,
-      color: `hsl(${Math.random() * 360}, 100%, 50%)`
-    }));
-
-    function draw() {
-      confetti.clearRect(0, 0, canvas.width, canvas.height);
-      for (let p of pieces) {
-        confetti.fillStyle = p.color;
-        confetti.fillRect(p.x, p.y, p.size, p.size);
-        p.y += p.speed;
-        if (p.y > window.innerHeight) p.y = -10;
-      }
-      requestAnimationFrame(draw);
+function showStripeAnimation() {
+  document.getElementById("overlay").style.display = "flex";
+  let width = 0;
+  let interval = setInterval(() => {
+    if (width >= 100) {
+      clearInterval(interval);
+    } else {
+      width++;
+      document.getElementById("progress-bar").style.width = width + "%";
     }
+  }, 40);
+}
 
-    draw();
-    setTimeout(() => document.body.removeChild(canvas), 5000);
-  }
-
-  // Light/Dark mode toggle
-  const toggle = document.createElement("button");
-  toggle.innerText = "Toggle Dark Mode";
-  toggle.style.position = "fixed";
-  toggle.style.bottom = "20px";
-  toggle.style.right = "20px";
-  toggle.style.padding = "10px";
-  toggle.style.zIndex = 9999;
-  toggle.onclick = () => {
-    const dark = document.body.classList.toggle("dark-mode");
-    toggle.innerText = dark ? "Toggle Light Mode" : "Toggle Dark Mode";
-    document.documentElement.style.setProperty('--primary-color', dark ? "#0ff" : "#007bff");
-  };
-  document.body.appendChild(toggle);
-</script>
-
-<style>
-  .dark-mode {
-    background: #111;
-    color: #eee;
-  }
-
-  .dark-mode input,
-  .dark-mode button {
-    background: #222;
-    color: #fff;
-    border: 1px solid #555;
-  }
-
-  .dark-mode #card-method div {
-    background: #333;
-    color: #eee;
-  }
-</style>
+function hideStripeAnimation() {
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("progress-bar").style.width = "0%";
+}
