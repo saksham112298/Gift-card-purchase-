@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,11 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(to right, #ece9e6, #ffffff);
@@ -19,9 +14,7 @@
       color: #333;
       text-align: center;
     }
-    h1, h2 {
-      margin-bottom: 20px;
-    }
+    h1, h2 { margin-bottom: 20px; }
     .card-option {
       display: inline-block;
       width: 180px;
@@ -54,9 +47,7 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-    button:hover {
-      background-color: #0056b3;
-    }
+    button:hover { background-color: #0056b3; }
     input {
       padding: 10px;
       font-size: 16px;
@@ -70,11 +61,7 @@
       margin-top: 30px;
       animation: fadeIn 0.8s ease-in-out;
     }
-    .spinner, .overlay {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .spinner, .overlay { display: flex; align-items: center; justify-content: center; }
     .spinner {
       border: 8px solid #f3f3f3;
       border-top: 8px solid #3498db;
@@ -109,13 +96,8 @@
     .progress-bar { width: 0%; height: 5px; background: green; transition: width 1s; }
     .error { border: 1px solid red; }
     .error-message { color: red; font-size: 12px; margin-top: 5px; }
-    .dark-mode {
-      background: #333;
-      color: #fff;
-    }
-    .dark-mode button {
-      background-color: #555;
-    }
+    .dark-mode { background: #333; color: #fff; }
+    .dark-mode button { background-color: #555; }
     @media screen and (max-width: 600px) {
       .card-option { width: 90%; }
       input { width: 90%; }
@@ -126,132 +108,29 @@
 <div class="overlay" id="stripeOverlay"><div class="stripe-loader"></div></div>
 <div class="progress-bar" id="progressBar"></div>
 <h1>Select a Gift Card</h1>
-<div id="card-options">
-  <div class="card-option" onclick="selectCard('Amazon')">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon">
-    <p>Amazon</p>
-  </div>
-  <div class="card-option" onclick="selectCard('Flipkart')">
-    <img src="https://1000logos.net/wp-content/uploads/2021/02/Flipkart-logo.png" alt="Flipkart">
-    <p>Flipkart</p>
-  </div>
-  <div class="card-option" onclick="selectCard('BookMyShow')">
-    <img src="https://assets-in.bmscdn.com/static/2023/03/bms-logo-new.png" alt="BookMyShow">
-    <p>BookMyShow</p>
-  </div>
-  <div class="card-option" onclick="selectCard('Zomato')">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Zomato_logo.png" alt="Zomato">
-    <p>Zomato</p>
-  </div>
-</div>
-
-<div id="amount-section" class="section">
-  <h2>Enter Amount for <span id="selected-card"></span></h2>
-  <div style="font-size: 22px;">$ <input type="number" id="amount" placeholder="Enter amount" /></div>
-  <input type="email" id="email" placeholder="Enter your email to receive card" />
-  <br><button onclick="delayNext('payment-section', 2000)">Proceed to Payment</button>
-</div>
-
-<div id="payment-section" class="section">
-  <h2>Select Payment Method</h2>
-  <button onclick="delayNext('loading-section', 3000)">Pay with UPI</button>
-  <button onclick="delayNext('card-form', 3000)">Credit/Debit Card</button>
-</div>
-
-<div id="card-form" class="section">
-  <h2>Enter Card Details</h2>
-  <div class="secure-label"><i class="fas fa-lock"></i>SSL Secured</div>
-  <input type="text" id="card-number" placeholder="Card Number" maxlength="19" oninput="formatCardNumber(this)" />
-  <br>
-  <input type="text" placeholder="Expiry Date (MM/YY)" />
-  <br>
-  <input type="password" placeholder="CVV" />
-  <br>
-  <input type="text" placeholder="Card Holder Name" />
-  <br>
-  <button onclick="processCardPayment()">Pay Now</button>
-</div>
-
-<div id="loading-section" class="section">
-  <h2>Processing Payment...</h2>
-  <div class="spinner"></div>
-</div>
-
-<div id="confirmation-section" class="section">
-  <h2>Payment Successful</h2>
-  <div class="green-tick">✔</div>
-  <p>Your gift card code:</p>
-  <h3 id="gift-code"></h3>
-  <button class="copy-btn" onclick="copyCode()">Copy Code</button>
-</div>
-
+<div id="card-options"></div>
+<div id="amount-section" class="section"></div>
+<div id="payment-section" class="section"></div>
+<div id="card-form" class="section"></div>
+<div id="loading-section" class="section"></div>
+<div id="confirmation-section" class="section"></div>
 <script>
-  let selectedCard = '';
-  let progressBar = document.getElementById('progressBar');
-  function selectCard(card) {
-    selectedCard = card;
-    document.getElementById('selected-card').innerText = card;
-    document.getElementById('card-options').style.display = 'none';
-    delayNext('amount-section', 2000);
-  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const cardOptions = [
+      { name: 'Amazon', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg' },
+      { name: 'Flipkart', logo: 'https://1000logos.net/wp-content/uploads/2021/02/Flipkart-logo.png' },
+      { name: 'BookMyShow', logo: 'https://assets-in.bmscdn.com/static/2023/03/bms-logo-new.png' },
+      { name: 'Zomato', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Zomato_logo.png' }
+    ];const cardOptionsContainer = document.getElementById('card-options');
+cardOptions.forEach(card => {
+  const div = document.createElement('div');
+  div.className = 'card-option';
+  div.innerHTML = `<img src="${card.logo}" alt="${card.name}" /><p>${card.name}</p>`;
+  div.onclick = () => selectCard(card.name);
+  cardOptionsContainer.appendChild(div);
+});
 
-  function delayNext(sectionId, delay) {
-    hideAllSections();
-    showSection('loading-section');
-    setTimeout(() => {
-      hideAllSections();
-      showSection(sectionId);
-    }, delay);
-  }
+}); </script>
 
-  function processCardPayment() {
-    hideAllSections();
-    showStripeAnimation();
-    setTimeout(() => {
-      hideStripeAnimation();
-      showSection('loading-section');
-      setTimeout(() => {
-        hideAllSections();
-        showSection('confirmation-section');
-        document.getElementById('gift-code').innerText = generateCodeText();
-      }, 3000);
-    }, 3000);
-  }
-
-  function generateCodeText() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 13; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
-  }
-
-  function formatCardNumber(input) {
-    input.value = input.value.replace(/[^0-9]/g, '').replace(/(.{4})/g, '$1 ').trim();
-  }
-
-  function showSection(id) {
-    document.getElementById(id).style.display = 'block';
-  }
-
-  function hideAllSections() {
-    document.querySelectorAll('.section').forEach(el => el.style.display = 'none');
-  }
-
-  function showStripeAnimation() {
-    document.getElementById('stripeOverlay').style.display = 'flex';
-    let width = 0;
-    let interval = setInterval(function() {
-      if (width >= 100) {
-        clearInterval(interval);
-      } else {
-        width++;
-        progressBar.style.width = width + '%';
-      }
-    }, 50);
-  }
-
-  function hideStripeAnimation() {
-    document.getElementById('stripeOverlay').style.display = 'none';
-  }
+</body>
+</html>
